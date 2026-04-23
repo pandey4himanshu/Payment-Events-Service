@@ -15,15 +15,22 @@ def main() -> None:
         print("AUTO_SEED_DATA is not enabled; skipping seed check.")
         return
 
+    minimum_event_count = int(os.getenv("MINIMUM_EVENT_COUNT", "10000"))
     init_db()
     with SessionLocal() as db:
         existing_events = db.scalar(select(func.count(PaymentEvent.id))) or 0
 
-    if existing_events > 0:
-        print(f"Database already contains {existing_events} events; skipping seed.")
+    if existing_events >= minimum_event_count:
+        print(
+            f"Database already contains {existing_events} events, which meets the minimum threshold "
+            f"of {minimum_event_count}; skipping seed."
+        )
         return
 
-    print("Database is empty; importing sample dataset.")
+    print(
+        f"Database currently contains {existing_events} events, below the minimum threshold of "
+        f"{minimum_event_count}; importing sample dataset."
+    )
     import_main()
 
 
