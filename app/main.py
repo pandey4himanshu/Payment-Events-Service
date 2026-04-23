@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+from threading import Thread
+
 from fastapi import FastAPI
 
 from app.core.config import get_settings
@@ -8,6 +11,7 @@ from app.routes.events import router as events_router
 from app.routes.health import router as health_router
 from app.routes.reconciliation import router as reconciliation_router
 from app.routes.transactions import router as transactions_router
+from scripts.seed_if_empty import main as seed_if_empty
 
 
 settings = get_settings()
@@ -26,6 +30,11 @@ def create_app() -> FastAPI:
     app.include_router(events_router)
     app.include_router(transactions_router)
     app.include_router(reconciliation_router)
+
+    @app.on_event("startup")
+    def startup_seed() -> None:
+        if os.getenv("AUTO_SEED_DATA", "false").lower() == "true":
+            Thread(target=seed_if_empty, daemon=True).start()
 
     return app
 
