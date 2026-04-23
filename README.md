@@ -10,6 +10,37 @@ This solution is intentionally practical and production-minded:
 - local setup that works with SQLite
 - deployment-ready configuration for Render or any similar platform
 
+## Live Deployment
+
+- Base URL: `https://payment-events-service.onrender.com`
+- API Docs: `https://payment-events-service.onrender.com/docs`
+- Health Check: `https://payment-events-service.onrender.com/health`
+
+For the best reviewer experience, start with:
+
+1. `GET /`
+2. `GET /docs`
+3. `GET /transactions?page=1&page_size=5`
+4. `GET /reconciliation/summary?group_by=merchant`
+5. `GET /reconciliation/discrepancies?page=1&page_size=5`
+
+## Reviewer Quick Start
+
+If you are reviewing the hosted service, you can validate the assignment quickly using the public deployment:
+
+1. open `/docs`
+2. verify `POST /events` accepts and deduplicates repeated `event_id`s
+3. verify `GET /transactions` supports filters, pagination, and sorting
+4. verify `GET /transactions/{transaction_id}` returns event history
+5. verify reconciliation summary and discrepancy endpoints return populated results
+
+If you want to run locally instead:
+
+```bash
+make demo-setup
+make run
+```
+
 ## Live Project Shape
 
 - Framework: `FastAPI`
@@ -124,6 +155,21 @@ Behavior:
 - transaction state updates automatically
 - returns duplicate metadata if re-submitted
 
+Example payload:
+
+```json
+{
+  "event_id": "evt_demo_1001",
+  "event_type": "payment_initiated",
+  "transaction_id": "txn_demo_1001",
+  "merchant_id": "merchant_demo",
+  "merchant_name": "OrbitCart",
+  "amount": 1999.99,
+  "currency": "INR",
+  "timestamp": "2026-01-08T12:11:58.085567+00:00"
+}
+```
+
 ### `GET /transactions`
 
 Supports:
@@ -158,6 +204,17 @@ Returns aggregated counts and amount totals.
 ### `GET /reconciliation/discrepancies`
 
 Returns transactions with inconsistent payment and settlement state, including `discrepancy_reason`.
+
+## Hosted API Smoke Test
+
+The deployed service can be checked with these URLs:
+
+- `GET https://payment-events-service.onrender.com/`
+- `GET https://payment-events-service.onrender.com/health`
+- `GET https://payment-events-service.onrender.com/docs`
+- `GET https://payment-events-service.onrender.com/transactions?page=1&page_size=5`
+- `GET https://payment-events-service.onrender.com/reconciliation/summary?group_by=merchant`
+- `GET https://payment-events-service.onrender.com/reconciliation/discrepancies?page=1&page_size=5`
 
 ## Local Setup
 
@@ -232,6 +289,12 @@ The repository includes `postman_collection.json` covering:
 - reconciliation summary
 - discrepancy listing
 
+To use the deployed service in Postman, set:
+
+```text
+base_url = https://payment-events-service.onrender.com
+```
+
 ## Dataset Notes
 
 The base dataset comes from the Setu assignment repository:
@@ -304,6 +367,10 @@ Recommended deployment path:
 5. deploy the service
 
 On first start, the service can automatically import the sample dataset if the database is empty.
+
+Current public deployment:
+
+- `https://payment-events-service.onrender.com`
 
 For a stronger production deployment, use Postgres in the hosted environment rather than SQLite.
 
