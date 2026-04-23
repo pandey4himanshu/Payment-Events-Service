@@ -1,0 +1,8 @@
+.pytest_cache/
+__pycache__/
+.venv/
+*.pyc
+.DS_Store
+setu.db
+test_setu.db
+assignment.db

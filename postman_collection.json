@@ -1,0 +1,110 @@
+{
+  "info": {
+    "name": "Setu Solutions Engineer Assignment",
+    "_postman_id": "0bf4c6fd-1dc7-46fb-8f32-1f797826f1c1",
+    "description": "Collection covering event ingestion, transaction retrieval, and reconciliation APIs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Ingest Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"evt_demo_001\",\n  \"event_type\": \"payment_initiated\",\n  \"transaction_id\": \"txn_demo_001\",\n  \"merchant_id\": \"merchant_demo\",\n  \"merchant_name\": \"OrbitCart\",\n  \"amount\": 1999.99,\n  \"currency\": \"INR\",\n  \"timestamp\": \"2026-01-08T12:11:58.085567+00:00\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/events",
+          "host": ["{{base_url}}"],
+          "path": ["events"]
+        }
+      }
+    },
+    {
+      "name": "List Transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/transactions?page=1&page_size=10&sort_by=last_event_at&sort_order=desc",
+          "host": ["{{base_url}}"],
+          "path": ["transactions"],
+          "query": [
+            {"key": "page", "value": "1"},
+            {"key": "page_size", "value": "10"},
+            {"key": "sort_by", "value": "last_event_at"},
+            {"key": "sort_order", "value": "desc"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Transaction Detail",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/transactions/txn_demo_001",
+          "host": ["{{base_url}}"],
+          "path": ["transactions", "txn_demo_001"]
+        }
+      }
+    },
+    {
+      "name": "Reconciliation Summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/reconciliation/summary?group_by=merchant",
+          "host": ["{{base_url}}"],
+          "path": ["reconciliation", "summary"],
+          "query": [
+            {"key": "group_by", "value": "merchant"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reconciliation Discrepancies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/reconciliation/discrepancies?page=1&page_size=20",
+          "host": ["{{base_url}}"],
+          "path": ["reconciliation", "discrepancies"],
+          "query": [
+            {"key": "page", "value": "1"},
+            {"key": "page_size", "value": "20"}
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}
