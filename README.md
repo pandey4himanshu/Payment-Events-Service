@@ -297,10 +297,13 @@ The repository includes `render.yaml` for easy deployment on Render.
 
 Recommended deployment path:
 
-1. create a new web service from this repository
-2. set `DATABASE_URL`
-3. run the API using the provided `startCommand`
-4. import the dataset as a one-time setup step
+1. create a Render Postgres instance in the same region as the web service
+2. create a new web service from this repository
+3. set `DATABASE_URL` to the Postgres internal URL
+4. set `AUTO_SEED_DATA=true`
+5. deploy the service
+
+On first start, the service can automatically import the sample dataset if the database is empty.
 
 For a stronger production deployment, use Postgres in the hosted environment rather than SQLite.
 
