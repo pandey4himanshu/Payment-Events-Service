@@ -11,7 +11,12 @@ class Settings:
     max_page_size: int = 200
 
     def __init__(self) -> None:
-        self.database_url = os.getenv("DATABASE_URL", "sqlite:///./setu.db")
+        raw_database_url = os.getenv("DATABASE_URL", "sqlite:///./setu.db")
+        if raw_database_url.startswith("postgres://"):
+            raw_database_url = raw_database_url.replace("postgres://", "postgresql+psycopg://", 1)
+        elif raw_database_url.startswith("postgresql://"):
+            raw_database_url = raw_database_url.replace("postgresql://", "postgresql+psycopg://", 1)
+        self.database_url = raw_database_url
 
 
 @lru_cache(maxsize=1)
